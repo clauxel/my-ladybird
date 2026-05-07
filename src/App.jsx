@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 
 import { findKeywordPageByPath, keywordPages, normalizePath } from './content/keyword-pages.js'
 import { trackEvent } from './lib/analytics.js'
-import { analyzeUrlLocally, getDefaultUrl, normalizeTargetUrl } from './lib/readiness.js'
+import { analyzeUrlLocally, getDefaultUrl } from './lib/readiness.js'
 import { syncSeo } from './lib/seo.js'
 
 const defaultOrigin = 'https://ladybird.best'
@@ -15,7 +15,7 @@ const plans = [
     label: 'Starter',
     monthlyUsd: 29,
     tagline: 'One site, one priority journey, enough signal to stop guessing.',
-    bullets: ['Public URL readiness scan', 'One monitored journey', 'Monthly browser-change brief', 'Email setup help'],
+    bullets: ['Guided URL readiness review', 'One monitored journey', 'Monthly browser-change brief', 'Email setup help'],
   },
   {
     id: 'pro',
@@ -37,7 +37,7 @@ const plans = [
 ]
 
 const proof = [
-  { value: '1 URL', label: 'to start the scan' },
+  { value: '1 site', label: 'included per workspace' },
   { value: '4 flows', label: 'headers, markup, media, checkout' },
   { value: '50%', label: 'annual savings by default' },
   { value: '2026', label: 'alpha horizon to track' },
@@ -168,10 +168,7 @@ export default function App() {
   const [headerTight, setHeaderTight] = useState(() => window.scrollY > 10)
   const [billing, setBilling] = useState('annual')
   const [selectedPlan, setSelectedPlan] = useState('pro')
-  const [targetUrl, setTargetUrl] = useState(getDefaultUrl())
-  const [scan, setScan] = useState(() => analyzeUrlLocally(getDefaultUrl()))
-  const [scanState, setScanState] = useState('idle')
-  const [scanError, setScanError] = useState('')
+  const [scan] = useState(() => analyzeUrlLocally(getDefaultUrl()))
   const [checkout, setCheckout] = useState(null)
   const [checkoutLoadingKey, setCheckoutLoadingKey] = useState('')
 
@@ -214,44 +211,6 @@ export default function App() {
     window.addEventListener('message', onMessage)
     return () => window.removeEventListener('message', onMessage)
   }, [publicOrigin, route])
-
-  async function runScan(event) {
-    event?.preventDefault()
-    setScanState('loading')
-    setScanError('')
-
-    let normalized
-    try {
-      normalized = normalizeTargetUrl(targetUrl)
-      setTargetUrl(normalized)
-    } catch (error) {
-      setScanState('idle')
-      setScanError(error.message)
-      return
-    }
-
-    trackEvent('readiness_scan_started', { host: new URL(normalized).hostname })
-
-    try {
-      const response = await fetch('/api/readiness', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: normalized }),
-      })
-      const payload = await readJson(response)
-      if (!response.ok || !payload?.ok || !payload.analysis) {
-        throw new Error(payload?.error || 'The live scan could not be completed.')
-      }
-      setScan(payload.analysis)
-      trackEvent('readiness_scan_completed', { grade: payload.analysis.grade, score: payload.analysis.score })
-    } catch {
-      const fallback = analyzeUrlLocally(normalized)
-      setScan(fallback)
-      setScanError('Live inspection was not available, so this result uses a local preview.')
-    } finally {
-      setScanState('idle')
-    }
-  }
 
   async function startCheckout(planId = 'pro', cycle = billing, loadingKey = `checkout-${planId}-${cycle}`) {
     setSelectedPlan(planId)
@@ -301,13 +260,6 @@ export default function App() {
     }
   }
 
-  function focusScanInput() {
-    route.navigate('/#scan')
-    requestAnimationFrame(() => {
-      document.querySelector('#target-url')?.focus()
-    })
-  }
-
   function goToPricing() {
     setBilling('annual')
     setSelectedPlan('pro')
@@ -330,8 +282,8 @@ export default function App() {
             <span>Ladybird Best</span>
           </a>
           <nav className="lb-nav" aria-label="Primary">
-            <a href="/#scan" onClick={headerLink('/#scan')}>
-              Scan
+            <a href="/#readiness" onClick={headerLink('/#readiness')}>
+              Readiness
             </a>
             <a href="/ladybird-browser" onClick={headerLink('/ladybird-browser')}>
               Browser
@@ -343,8 +295,8 @@ export default function App() {
               Pricing
             </a>
           </nav>
-          <button className="lb-button lb-button-soft lb-header-cta" type="button" onClick={focusScanInput}>
-            Start with scan
+          <button className="lb-button lb-button-soft lb-header-cta" type="button" onClick={goToPricing}>
+            Choose Pro annual
           </button>
         </div>
       </header>
@@ -353,32 +305,14 @@ export default function App() {
 
   function renderScanCard() {
     return (
-      <section className="lb-scan-card" aria-label="Ladybird readiness scanner">
+      <section className="lb-scan-card" aria-label="Ladybird readiness workspace preview">
         <div className="lb-scan-top">
           <div>
-            <p className="lb-eyebrow">Live readiness scan</p>
-            <h2>Paste your site. See the independent-browser risk in one pass.</h2>
+            <p className="lb-eyebrow">Workspace preview</p>
+            <h2>See what Flight Deck reviews before your team spends engineering time.</h2>
           </div>
-          <span className="lb-live-dot">Worker powered</span>
+          <span className="lb-live-dot">Pro annual</span>
         </div>
-
-        <form className="lb-url-form" onSubmit={runScan}>
-          <label htmlFor="target-url">Public URL</label>
-          <div>
-            <input
-              id="target-url"
-              value={targetUrl}
-              onChange={(event) => setTargetUrl(event.target.value)}
-              placeholder="https://your-site.com"
-              inputMode="url"
-            />
-            <button className="lb-button lb-button-dark" type="submit" disabled={scanState === 'loading'}>
-              {scanState === 'loading' ? 'Scanning...' : 'Run scan'}
-            </button>
-          </div>
-        </form>
-
-        {scanError ? <p className="lb-inline-note">{scanError}</p> : null}
 
         <div className="lb-score-row">
           <div className="lb-score-ring" style={{ '--score': scan.score }}>
@@ -403,8 +337,8 @@ export default function App() {
 
         <div className="lb-risk-panel">
           <div>
-            <strong>Top risks to clear</strong>
-            <p>Keep the first test narrow and attached to a revenue journey.</p>
+            <strong>What the paid workspace turns into action</strong>
+            <p>Keep the first review narrow and attached to a revenue journey.</p>
           </div>
           <ul>
             {scan.risks.map((risk) => (
@@ -415,7 +349,7 @@ export default function App() {
 
         <div className="lb-next-actions">
           <button className="lb-button lb-button-red" type="button" onClick={goToPricing}>
-            See recommended plan
+            Choose annual Pro
           </button>
           <a href="/ladybird-browser" onClick={headerLink('/ladybird-browser')}>
             Read the browser guide
@@ -432,30 +366,30 @@ export default function App() {
       <main className="lb-main">
         {paymentSuccess ? <div className="lb-success">Payment received. You are back on the homepage and the workspace setup can begin.</div> : null}
 
-        <section className="lb-hero" id="scan">
+        <section className="lb-hero" id="readiness">
           <div className="lb-hero-copy">
             <p className="lb-eyebrow">Independent browser readiness for the Ladybird era</p>
             <h1>See whether your site is ready for Ladybird Browser before your users ask.</h1>
             <p className="lb-lede">
-              Run a practical URL scan, spot standards and media risks, then open a monitored workspace that keeps checkout,
-              login, and public pages ready for a truly independent web engine.
+              Start with a monitored readiness workspace that turns standards, media, login, and checkout risk into a short
+              action plan for a truly independent web engine.
             </p>
             <div className="lb-hero-actions">
-              <button className="lb-button lb-button-red" type="button" onClick={runScan} disabled={scanState === 'loading'}>
-                {scanState === 'loading' ? 'Scanning your site...' : 'Run the free scan'}
+              <button className="lb-button lb-button-red" type="button" onClick={goToPricing}>
+                Choose Pro annual
               </button>
               <button
                 className="lb-button lb-button-cream"
                 type="button"
-                onClick={goToPricing}
+                onClick={() => route.navigate('/ladybird-browser')}
               >
-                See plans
+                Read the browser guide
               </button>
             </div>
             <div className="lb-trust-row">
-              <span>Free scan first</span>
               <span>Pro selected by default</span>
               <span>Annual is 50% less</span>
+              <span>Checkout opens in a popup</span>
             </div>
           </div>
 
@@ -648,11 +582,11 @@ export default function App() {
           <aside className="lb-article-cta">
             <div>
               <p className="lb-eyebrow">Next step</p>
-              <h2>Scan your own URL while the context is fresh.</h2>
-              <p>The fastest way to make this practical is to test the page your users actually land on.</p>
+              <h2>Choose the readiness plan while the context is fresh.</h2>
+              <p>The fastest way to make this practical is to attach the review to the page your users actually land on.</p>
             </div>
-            <button className="lb-button lb-button-red" type="button" onClick={() => route.navigate('/#scan')}>
-              Run readiness scan
+            <button className="lb-button lb-button-red" type="button" onClick={goToPricing}>
+              See recommended plan
             </button>
           </aside>
         </article>
@@ -667,19 +601,19 @@ export default function App() {
           <p className="lb-eyebrow">Privacy</p>
           <h1>Privacy Policy</h1>
           <p className="lb-lede">
-            Ladybird Best keeps scanning focused on public URLs and uses first-party events only to understand whether the product
-            is working.
+            Ladybird Best keeps readiness work focused on public URLs and uses first-party events only to understand whether the
+            product is working.
           </p>
           <section>
-            <h2>Readiness scans</h2>
+            <h2>Readiness reviews</h2>
             <p>
-              The scan accepts public HTTP or HTTPS URLs and inspects reachable signals such as headers and markup hints. Do not
-              submit private dashboards or URLs containing secrets.
+              Paid workspaces review public HTTP or HTTPS URLs and inspect reachable signals such as headers and markup hints. Do
+              not submit private dashboards or URLs containing secrets.
             </p>
             <h2>Payments</h2>
             <p>Payments are handled through Creem hosted checkout. We receive payment metadata needed for fulfillment and support.</p>
             <h2>Measurement</h2>
-            <p>We send simple first-party events such as page views, scan starts, scan completions, and checkout starts. We do not use third-party tracking cookies.</p>
+            <p>We send simple first-party events such as page views, pricing intent, and checkout starts. We do not use third-party tracking cookies.</p>
           </section>
         </article>
       </main>
@@ -693,12 +627,12 @@ export default function App() {
           <p className="lb-eyebrow">Terms</p>
           <h1>Terms of Service</h1>
           <p className="lb-lede">
-            By using Ladybird Best, you agree to use public URLs responsibly, keep payment information accurate, and treat scan
+            By using Ladybird Best, you agree to use public URLs responsibly, keep payment information accurate, and treat readiness
             results as planning support rather than a guarantee of future browser behavior.
           </p>
           <section>
             <h2>Service scope</h2>
-            <p>Plans cover readiness scans, monitored journey notes, browser-progress interpretation, and practical compatibility guidance.</p>
+            <p>Plans cover paid readiness reviews, monitored journey notes, browser-progress interpretation, and practical compatibility guidance.</p>
             <h2>Independent project</h2>
             <p>Ladybird Best is independent and is not affiliated with the official Ladybird Browser project.</p>
             <h2>Payments</h2>

@@ -15,7 +15,7 @@ const googleVerification = (process.env.GOOGLE_SITE_VERIFICATION || '').trim()
 
 const homeTitle = 'Ladybird Best | Independent Browser Readiness Lab'
 const homeDescription =
-  'Run a practical Ladybird Browser readiness scan, understand independent engine risk, and launch a monitored compatibility workspace for your site.'
+  'Choose a monitored Ladybird Browser readiness workspace, understand independent engine risk, and prepare checkout, login, media, and public pages.'
 
 const sourceIndex = await fs.readFile(sourceIndexPath, 'utf8')
 
@@ -93,24 +93,24 @@ for (const page of keywordPages) {
 
 await writeStaticPage('/privacy', {
   title: `Privacy | ${siteName}`,
-  description: 'How Ladybird Best handles readiness scans, payment metadata, support messages, and first-party analytics.',
+  description: 'How Ladybird Best handles paid readiness reviews, payment metadata, support messages, and first-party analytics.',
   robots: 'index,follow',
   canonicalPath: '/privacy',
   rootHtml: buildLegalPrerender(
     'Privacy Policy',
-    'Ladybird Best keeps scanning focused on public URLs and uses simple first-party events to understand product reliability.',
+    'Ladybird Best keeps readiness work focused on public URLs and uses simple first-party events to understand product reliability.',
   ),
   structuredData: [],
 })
 
 await writeStaticPage('/terms', {
   title: `Terms | ${siteName}`,
-  description: 'Terms for using Ladybird Best readiness scans, compatibility workspaces, and hosted checkout.',
+  description: 'Terms for using Ladybird Best paid readiness reviews, compatibility workspaces, and hosted checkout.',
   robots: 'index,follow',
   canonicalPath: '/terms',
   rootHtml: buildLegalPrerender(
     'Terms of Service',
-    'Plans cover readiness scans, monitored journey notes, browser-progress interpretation, and practical compatibility guidance.',
+    'Plans cover paid readiness reviews, monitored journey notes, browser-progress interpretation, and practical compatibility guidance.',
   ),
   structuredData: [],
 })
@@ -188,16 +188,16 @@ function stripContext(item) {
 function buildHomePrerender() {
   return `
     <main class="lb-main">
-      <section class="lb-hero" id="scan">
+      <section class="lb-hero" id="readiness">
         <div class="lb-hero-copy">
           <p class="lb-eyebrow">Independent browser readiness for the Ladybird era</p>
           <h1>See whether your site is ready for Ladybird Browser before your users ask.</h1>
-          <p class="lb-lede">Run a practical URL scan, spot standards and media risks, then open a monitored workspace for a truly independent web engine.</p>
-          <p><a class="lb-button lb-button-red" href="#scan">Run the free scan</a></p>
+          <p class="lb-lede">Start with a monitored readiness workspace that turns standards, media, login, and checkout risk into a short action plan for a truly independent web engine.</p>
+          <p><a class="lb-button lb-button-red" href="#pricing">Choose Pro annual</a></p>
         </div>
         <section class="lb-scan-card">
-          <p class="lb-eyebrow">Live readiness scan</p>
-          <h2>Paste your site. See the independent-browser risk in one pass.</h2>
+          <p class="lb-eyebrow">Workspace preview</p>
+          <h2>See what Flight Deck reviews before your team spends engineering time.</h2>
         </section>
       </section>
     </main>`
@@ -234,10 +234,10 @@ function buildKeywordPrerender(page) {
         <aside class="lb-article-cta">
           <div>
             <p class="lb-eyebrow">Next step</p>
-            <h2>Scan your own URL while the context is fresh.</h2>
-            <p>The fastest way to make this practical is to test the page your users actually land on.</p>
+            <h2>Choose the readiness plan while the context is fresh.</h2>
+            <p>The fastest way to make this practical is to attach the review to the page your users actually land on.</p>
           </div>
-          <a class="lb-button lb-button-red" href="/#scan">Run readiness scan</a>
+          <a class="lb-button lb-button-red" href="/#pricing">See recommended plan</a>
         </aside>
       </article>
     </main>`

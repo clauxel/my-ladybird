@@ -7,15 +7,15 @@ const routeSeo = {
   '/': {
     title: 'Ladybird Best | Independent Browser Readiness Lab',
     description:
-      'Run a practical Ladybird Browser readiness scan, understand independent engine risk, and launch a monitored compatibility workspace for your site.',
+      'Choose a monitored Ladybird Browser readiness workspace, understand independent engine risk, and prepare checkout, login, media, and public pages.',
   },
   '/privacy': {
     title: `Privacy | ${siteName}`,
-    description: 'How Ladybird Best handles readiness scans, payment metadata, support messages, and first-party analytics.',
+    description: 'How Ladybird Best handles paid readiness reviews, payment metadata, support messages, and first-party analytics.',
   },
   '/terms': {
     title: `Terms | ${siteName}`,
-    description: 'Terms for using Ladybird Best readiness scans, compatibility workspaces, and hosted checkout.',
+    description: 'Terms for using Ladybird Best paid readiness reviews, compatibility workspaces, and hosted checkout.',
   },
   '/checkout/done': {
     title: `Checkout Complete | ${siteName}`,

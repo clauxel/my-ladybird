@@ -59,12 +59,12 @@ export const keywordPages = [
         heading: 'If you mean Ladybird Browser',
         paragraphs: [
           'Start with the official Ladybird site, the project news archive, and the project video channels. Those sources explain the engine roadmap, alpha timing, sponsor updates, and technical progress without mixing it with unrelated entertainment results.',
-          'For teams evaluating web compatibility, a short readiness scan is usually more useful than passively watching demos because it turns curiosity into a list of fixes for your own site.',
+          'For teams evaluating web compatibility, a paid readiness workflow is usually more useful than passively watching demos because it turns curiosity into a list of fixes for your own site.',
         ],
         bullets: [
           'Watch recent monthly updates before making a build or adoption decision.',
           'Use official source links when sharing the project internally.',
-          'Run your own URL through a readiness workflow if your goal is business planning.',
+          'Attach your own URL to a readiness workspace if your goal is business planning.',
         ],
       },
       {
@@ -213,7 +213,7 @@ export const keywordPages = [
           'The project describes itself as pre-alpha and aimed at developers right now. Treat it as an evaluation target, not a mainstream replacement.',
       },
       {
-        question: 'What does Ladybird Best scan?',
+        question: 'What does Ladybird Best review?',
         answer:
           'It checks URL-level signals, headers, markup hints, media risk, privacy friction, and engine-specific assumptions, then turns the result into a short testing plan.',
       },
@@ -274,7 +274,7 @@ export const keywordPages = [
         heading: 'What “download” means right now',
         paragraphs: [
           'The official path is to use the source repository and build instructions. Public project material points toward an alpha release for Linux and macOS, but until stable releases exist, unofficial downloads should be treated carefully.',
-          'Do not download random binaries from unfamiliar sites. If your goal is business readiness, you can start with a compatibility scan before asking engineers to build the browser locally.',
+          'Do not download random binaries from unfamiliar sites. If your goal is business readiness, start with a compatibility plan before asking engineers to build the browser locally.',
         ],
         bullets: [
           'Use official project links for source and documentation.',
@@ -285,7 +285,7 @@ export const keywordPages = [
       {
         heading: 'A better first test for teams',
         paragraphs: [
-          'Run your public URL through a readiness scan first. It will not replace real browser testing, but it helps you decide whether the next hour should go into build setup, authentication cleanup, media testing, or checkout-flow hardening.',
+          'Attach your public URL to a paid readiness review first. It will not replace real browser testing, but it helps you decide whether the next hour should go into build setup, authentication cleanup, media testing, or checkout-flow hardening.',
         ],
       },
     ],
@@ -298,7 +298,7 @@ export const keywordPages = [
       {
         question: 'Can I test my site without building Ladybird first?',
         answer:
-          'Yes. Start with a readiness scan to catch obvious standards, header, media, and flow risks, then move to real browser testing when you need proof.',
+          'Yes. Start with a paid readiness review to catch obvious standards, header, media, and flow risks, then move to real browser testing when you need proof.',
       },
     ],
   },
