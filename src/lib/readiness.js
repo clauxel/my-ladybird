@@ -10,10 +10,10 @@ export function getDefaultUrl() {
 
 export function normalizeTargetUrl(value) {
   const trimmed = String(value || '').trim()
-  if (!trimmed) throw new Error('Enter a public URL to scan.')
+  if (!trimmed) throw new Error('Enter a public URL to review.')
   const withProtocol = /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`
   const url = new URL(withProtocol)
-  if (!['http:', 'https:'].includes(url.protocol)) throw new Error('Only HTTP and HTTPS URLs can be scanned.')
+  if (!['http:', 'https:'].includes(url.protocol)) throw new Error('Only HTTP and HTTPS URLs can be reviewed.')
   return url.toString()
 }
 
@@ -81,7 +81,7 @@ export function buildChecks(context) {
       detail:
         context.markupStatus === 'html'
           ? 'HTML was reachable and can be reviewed for engine-neutral patterns.'
-          : 'Scan could not fully inspect markup yet; start with a smoke test.',
+          : 'Markup has not been inspected yet; start with a smoke test inside the workspace.',
     },
     {
       label: 'Secure delivery',
@@ -116,7 +116,7 @@ export function buildRisks(context) {
   if (context.hasPaymentFlow) risks.push('Test checkout in a popup and same-tab fallback; payment flows are where small browser differences become expensive.')
   if (context.isApp) risks.push('Write a login-to-core-action script instead of testing a dashboard page in isolation.')
   if (context.isMedia) risks.push('Separate ordinary playback from DRM or streaming-service compatibility.')
-  if (!risks.length) risks.push('Run a real crawl next; the first-pass signals look clean enough to move quickly.')
+  if (!risks.length) risks.push('Schedule a real review next; the first-pass signals look clean enough to move quickly.')
   return risks.slice(0, 4)
 }
 

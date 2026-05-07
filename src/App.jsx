@@ -271,6 +271,10 @@ export default function App() {
     window.setTimeout(scrollToRecommendedPlan, 420)
   }
 
+  function startProAnnualCheckout(loadingKey = 'pro-annual-direct') {
+    startCheckout('pro', 'annual', loadingKey)
+  }
+
   function renderHeader() {
     return (
       <header className={`lb-header${headerTight ? ' is-tight' : ''}`}>
@@ -295,8 +299,13 @@ export default function App() {
               Pricing
             </a>
           </nav>
-          <button className="lb-button lb-button-soft lb-header-cta" type="button" onClick={goToPricing}>
-            Choose Pro annual
+          <button
+            className="lb-button lb-button-soft lb-header-cta"
+            type="button"
+            onClick={() => startProAnnualCheckout('header-pro-annual')}
+            disabled={Boolean(checkoutLoadingKey)}
+          >
+            {checkoutLoadingKey === 'header-pro-annual' ? 'Opening checkout...' : 'Choose Pro annual'}
           </button>
         </div>
       </header>
@@ -348,11 +357,22 @@ export default function App() {
         </div>
 
         <div className="lb-next-actions">
-          <button className="lb-button lb-button-red" type="button" onClick={goToPricing}>
-            Choose annual Pro
+          <button
+            className="lb-button lb-button-red"
+            type="button"
+            onClick={() => startProAnnualCheckout('preview-pro-annual')}
+            disabled={Boolean(checkoutLoadingKey)}
+          >
+            {checkoutLoadingKey === 'preview-pro-annual' ? 'Opening checkout...' : 'Choose annual Pro'}
           </button>
-          <a href="/ladybird-browser" onClick={headerLink('/ladybird-browser')}>
-            Read the browser guide
+          <a
+            href="/#pricing"
+            onClick={(event) => {
+              event.preventDefault()
+              goToPricing()
+            }}
+          >
+            Browse plans
           </a>
         </div>
       </section>
@@ -375,15 +395,20 @@ export default function App() {
               action plan for a truly independent web engine.
             </p>
             <div className="lb-hero-actions">
-              <button className="lb-button lb-button-red" type="button" onClick={goToPricing}>
-                Choose Pro annual
+              <button
+                className="lb-button lb-button-red"
+                type="button"
+                onClick={() => startProAnnualCheckout('hero-pro-annual')}
+                disabled={Boolean(checkoutLoadingKey)}
+              >
+                {checkoutLoadingKey === 'hero-pro-annual' ? 'Opening checkout...' : 'Choose Pro annual'}
               </button>
               <button
                 className="lb-button lb-button-cream"
                 type="button"
-                onClick={() => route.navigate('/ladybird-browser')}
+                onClick={goToPricing}
               >
-                Read the browser guide
+                Browse plans
               </button>
             </div>
             <div className="lb-trust-row">
