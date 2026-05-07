@@ -83,8 +83,13 @@ test('checkout creates Creem product and hosted checkout URL', async () => {
     assert.equal(response.status, 200)
     assert.equal(payload.ok, true)
     assert.equal(payload.checkoutUrl, 'https://www.creem.io/checkout/test')
+    assert.equal(calls[0].body.name, 'Ladybird Best Flight Deck (annual)')
+    assert.equal(calls[0].body.price, 47400)
     assert.equal(calls[0].body.currency, 'USD')
     assert.equal(calls[0].body.billing_type, 'onetime')
+    assert.match(calls[0].body.description, /\$39\.50\/mo/)
+    assert.equal(calls[1].body.metadata.planId, 'pro')
+    assert.equal(calls[1].body.metadata.billing, 'annual')
     assert.equal(calls[1].body.success_url, 'https://www.ladybird.best/checkout/done')
   } finally {
     globalThis.fetch = originalFetch
