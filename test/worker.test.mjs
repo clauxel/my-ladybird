@@ -91,49 +91,22 @@ test('checkout creates Creem product and hosted checkout URL', async () => {
   }
 })
 
-test('readiness blocks local targets', async () => {
+test('readiness endpoint is not offered as a free scan', async () => {
   const response = await handleReadiness(
     new Request('https://ladybird.best/api/readiness', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ url: 'http://localhost:3000' }),
+      body: JSON.stringify({ url: 'https://example.com/pricing' }),
     }),
   )
-  assert.equal(response.status, 400)
+  const payload = await response.json()
+
+  assert.equal(response.status, 402)
+  assert.equal(payload.ok, false)
+  assert.match(payload.error, /paid workspaces/i)
 })
 
-test('readiness inspects reachable HTML without leaking headers', async () => {
-  const originalFetch = globalThis.fetch
-  globalThis.fetch = async () =>
-    new Response(
-      '<!doctype html><main><h1>Pricing</h1><script type="module" src="/app.js"></script><a href="/checkout">Checkout</a></main>',
-      {
-        status: 200,
-        statusText: 'OK',
-        headers: {
-          'content-type': 'text/html; charset=utf-8',
-          'content-security-policy': "default-src 'self'",
-          'strict-transport-security': 'max-age=31536000',
-        },
-      },
-    )
-
-  try {
-    const response = await handleReadiness(
-      new Request('https://ladybird.best/api/readiness', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: 'https://example.com/pricing' }),
-      }),
-    )
-    const payload = await response.json()
-
-    assert.equal(response.status, 200)
-    assert.equal(payload.ok, true)
-    assert.equal(payload.analysis.mode, 'remote-inspection')
-    assert.ok(payload.analysis.score >= 70)
-    assert.ok(payload.analysis.risks.some((risk) => /checkout/i.test(risk)))
-  } finally {
-    globalThis.fetch = originalFetch
-  }
+test('readiness endpoint still rejects unsupported methods', async () => {
+  const response = await handleReadiness(new Request('https://ladybird.best/api/readiness'))
+  assert.equal(response.status, 405)
 })

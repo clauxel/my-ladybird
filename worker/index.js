@@ -382,29 +382,7 @@ async function inspectRemoteUrl(targetUrl) {
 
 export async function handleReadiness(request) {
   if (request.method !== 'POST') return jsonResponse({ ok: false, error: 'Method not allowed.' }, 405)
-
-  let body
-  try {
-    body = await request.json()
-  } catch {
-    return jsonResponse({ ok: false, error: 'Invalid JSON body.' }, 400)
-  }
-
-  let targetUrl
-  try {
-    targetUrl = normalizeTargetUrl(body?.url)
-    const parsed = new URL(targetUrl)
-    if (isBlockedTarget(parsed)) return jsonResponse({ ok: false, error: 'Only public URLs can be scanned.' }, 400)
-  } catch (error) {
-    return jsonResponse({ ok: false, error: error instanceof Error ? error.message : 'Invalid URL.' }, 400)
-  }
-
-  try {
-    const analysis = await inspectRemoteUrl(targetUrl)
-    return jsonResponse({ ok: true, analysis })
-  } catch {
-    return jsonResponse({ ok: false, error: 'The remote URL could not be inspected right now.' }, 502)
-  }
+  return jsonResponse({ ok: false, error: 'Readiness reviews are available inside paid workspaces after checkout.' }, 402)
 }
 
 function sanitizeAnalyticsValue(value, max = 160) {
