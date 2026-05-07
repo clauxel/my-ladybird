@@ -193,7 +193,7 @@ function buildHomePrerender() {
           <p class="lb-eyebrow">Independent browser readiness for the Ladybird era</p>
           <h1>See whether your site is ready for Ladybird Browser before your users ask.</h1>
           <p class="lb-lede">Run a practical URL scan, spot standards and media risks, then open a monitored workspace for a truly independent web engine.</p>
-          <p><a class="lb-button lb-button-red" href="#pricing">Start Pro annual</a></p>
+          <p><a class="lb-button lb-button-red" href="#scan">Run the free scan</a></p>
         </div>
         <section class="lb-scan-card">
           <p class="lb-eyebrow">Live readiness scan</p>

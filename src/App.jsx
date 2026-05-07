@@ -139,9 +139,9 @@ function useRoute() {
     setSearch(url.search)
 
     if (url.hash) {
-      requestAnimationFrame(() => {
-        document.querySelector(url.hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-      })
+      const scrollToHash = () => document.querySelector(url.hash)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+      requestAnimationFrame(scrollToHash)
+      window.setTimeout(scrollToHash, 80)
       return
     }
 
@@ -301,6 +301,24 @@ export default function App() {
     }
   }
 
+  function focusScanInput() {
+    route.navigate('/#scan')
+    requestAnimationFrame(() => {
+      document.querySelector('#target-url')?.focus()
+    })
+  }
+
+  function goToPricing() {
+    setBilling('annual')
+    setSelectedPlan('pro')
+    route.navigate('/#pricing')
+    const scrollToRecommendedPlan = () =>
+      document.querySelector('.lb-plan-card[data-popular="true"]')?.scrollIntoView({ behavior: 'smooth', block: 'center' })
+    requestAnimationFrame(scrollToRecommendedPlan)
+    window.setTimeout(scrollToRecommendedPlan, 120)
+    window.setTimeout(scrollToRecommendedPlan, 420)
+  }
+
   function renderHeader() {
     return (
       <header className={`lb-header${headerTight ? ' is-tight' : ''}`}>
@@ -325,8 +343,8 @@ export default function App() {
               Pricing
             </a>
           </nav>
-          <button className="lb-button lb-button-soft lb-header-cta" type="button" onClick={() => startCheckout('pro', 'annual', 'header-pro-annual')}>
-            Start Pro annual
+          <button className="lb-button lb-button-soft lb-header-cta" type="button" onClick={focusScanInput}>
+            Start with scan
           </button>
         </div>
       </header>
@@ -396,8 +414,8 @@ export default function App() {
         </div>
 
         <div className="lb-next-actions">
-          <button className="lb-button lb-button-red" type="button" onClick={() => startCheckout('pro', 'annual', 'scan-pro-annual')}>
-            Open Pro annual
+          <button className="lb-button lb-button-red" type="button" onClick={goToPricing}>
+            See recommended plan
           </button>
           <a href="/ladybird-browser" onClick={headerLink('/ladybird-browser')}>
             Read the browser guide
@@ -423,21 +441,21 @@ export default function App() {
               login, and public pages ready for a truly independent web engine.
             </p>
             <div className="lb-hero-actions">
-              <button className="lb-button lb-button-red" type="button" onClick={() => startCheckout('pro', 'annual', 'hero-pro-annual')}>
-                Start Pro annual
+              <button className="lb-button lb-button-red" type="button" onClick={runScan} disabled={scanState === 'loading'}>
+                {scanState === 'loading' ? 'Scanning your site...' : 'Run the free scan'}
               </button>
               <button
                 className="lb-button lb-button-cream"
                 type="button"
-                onClick={() => document.querySelector('#target-url')?.focus()}
+                onClick={goToPricing}
               >
-                Run the free scan
+                See plans
               </button>
             </div>
             <div className="lb-trust-row">
+              <span>Free scan first</span>
               <span>Pro selected by default</span>
               <span>Annual is 50% less</span>
-              <span>Secure Creem popup checkout</span>
             </div>
           </div>
 
@@ -576,7 +594,7 @@ export default function App() {
                   onClick={() => startCheckout(plan.id, billing, loadingKey)}
                   disabled={Boolean(checkoutLoadingKey)}
                 >
-                  {checkoutLoadingKey === loadingKey ? 'Opening checkout...' : `Start ${plan.label} ${billing}`}
+                  {checkoutLoadingKey === loadingKey ? 'Opening checkout...' : `Checkout ${plan.label} ${billing}`}
                 </button>
                 {selectedPlan === plan.id ? <span className="lb-selected">Selected</span> : null}
               </article>
