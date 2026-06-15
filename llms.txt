@@ -1,0 +1,21 @@
+# Ladybird Best
+
+Check Ladybird Browser readiness for checkout, login, media, forms, public pages, and independent engine risk before you ship customer-facing apps.
+
+Website: https://ladybird.best/
+Pricing: https://ladybird.best/pricing/
+Checkout: https://ladybird.best/checkout/
+Support: support@aigeamy.com
+Type: Hosted SaaS workflow product
+
+Problem:
+- Teams need a quotable product definition, pricing path, evidence trail, and checkout route.
+
+Solution:
+- Ladybird Best provides a hosted workflow with public pricing, structured evidence, support contact, and report or receipt outputs.
+
+Useful pages:
+- Home: https://ladybird.best/
+- Pricing: https://ladybird.best/pricing/
+- Resources: https://ladybird.best/resources/
+- Sitemap: https://ladybird.best/sitemap.xml

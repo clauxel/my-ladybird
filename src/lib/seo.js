@@ -5,9 +5,9 @@ const siteName = 'Ladybird Best'
 
 const routeSeo = {
   '/': {
-    title: 'Ladybird Best | Independent Browser Readiness Lab',
+    title: 'Ladybird Best - Independent Browser Readiness Lab for App Teams',
     description:
-      'Choose a monitored Ladybird Browser readiness workspace, understand independent engine risk, and prepare checkout, login, media, and public pages.',
+      'Check Ladybird Browser readiness for checkout, login, media, forms, public pages, and independent engine risk before you ship customer-facing apps.',
   },
   '/privacy': {
     title: `Privacy | ${siteName}`,

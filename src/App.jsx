@@ -212,7 +212,7 @@ export default function App() {
     return () => window.removeEventListener('message', onMessage)
   }, [publicOrigin, route])
 
-  async function startCheckout(planId = 'pro', cycle = billing, loadingKey = `checkout-${planId}-${cycle}`) {
+  async function startCheckout(planId = 'pro', cycle = billing, loadingKey = `checkout-${planId}-${cycle}`, provider = 'creem') {
     setSelectedPlan(planId)
     setBilling(cycle)
     setCheckoutLoadingKey(loadingKey)
@@ -222,7 +222,7 @@ export default function App() {
     const popup = openCenteredCheckoutWindow()
 
     try {
-      const response = await fetch('/api/checkout', {
+      const response = await fetch(provider === 'nowpayments' ? '/api/nowpayments-checkout' : '/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ planId, billing: cycle }),
@@ -554,6 +554,16 @@ export default function App() {
                   disabled={Boolean(checkoutLoadingKey)}
                 >
                   {checkoutLoadingKey === loadingKey ? 'Opening checkout...' : `Checkout ${plan.label} ${billing}`}
+                </button>
+                <button
+                  className="lb-button lb-button-dark"
+                  type="button"
+                  onMouseEnter={() => setSelectedPlan(plan.id)}
+                  onFocus={() => setSelectedPlan(plan.id)}
+                  onClick={() => startCheckout(plan.id, billing, `${loadingKey}-wallet`, 'nowpayments')}
+                  disabled={Boolean(checkoutLoadingKey)}
+                >
+                  {checkoutLoadingKey === `${loadingKey}-wallet` ? 'Opening USDC wallet...' : 'Pay with USDC Wallet'}
                 </button>
                 {selectedPlan === plan.id ? <span className="lb-selected">Selected</span> : null}
               </article>

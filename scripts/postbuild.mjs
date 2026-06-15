@@ -13,9 +13,9 @@ const origin = 'https://ladybird.best'
 const siteName = 'Ladybird Best'
 const googleVerification = (process.env.GOOGLE_SITE_VERIFICATION || '').trim()
 
-const homeTitle = 'Ladybird Best | Independent Browser Readiness Lab'
+const homeTitle = 'Ladybird Best - Independent Browser Readiness Lab for App Teams'
 const homeDescription =
-  'Choose a monitored Ladybird Browser readiness workspace, understand independent engine risk, and prepare checkout, login, media, and public pages.'
+  'Check Ladybird Browser readiness for checkout, login, media, forms, public pages, and independent engine risk before you ship customer-facing apps.'
 
 const sourceIndex = await fs.readFile(sourceIndexPath, 'utf8')
 
