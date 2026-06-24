@@ -15,7 +15,7 @@ test('runtime returns Cloudflare deployment metadata', async () => {
   const payload = await response.json()
   assert.equal(payload.ok, true)
   assert.equal(payload.publicAppOrigin, 'https://www.ladybird.best')
-  assert.equal(payload.paymentProvider, 'creem')
+  assert.equal(payload.paymentProvider, 'polar')
 })
 
 test('sitemap and robots include indexable Ladybird pages', () => {
@@ -54,7 +54,7 @@ test('checkout validates method and payment secret', async () => {
   assert.equal(noSecretResponse.status, 503)
 })
 
-test('checkout creates Creem product and hosted checkout URL', async () => {
+test('checkout creates Polar product and hosted checkout URL', async () => {
   const originalFetch = globalThis.fetch
   const calls = []
   globalThis.fetch = async (url, options) => {
@@ -63,7 +63,7 @@ test('checkout creates Creem product and hosted checkout URL', async () => {
       return Response.json({ id: 'prod_ladybird_test' })
     }
     if (String(url).endsWith('/v1/checkouts')) {
-      return Response.json({ checkout_url: 'https://www.creem.io/checkout/test' })
+      return Response.json({ checkout_url: 'https://www.polar.sh/checkout/test' })
     }
     return Response.json({ message: 'unexpected' }, { status: 500 })
   }
@@ -75,14 +75,14 @@ test('checkout creates Creem product and hosted checkout URL', async () => {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ planId: 'pro', billing: 'annual' }),
       }),
-      { API_PROD_KEY: 'creem_test_key' },
+      { API_PROD_KEY: 'polar_test_key' },
       new URL('https://www.ladybird.best/api/checkout'),
     )
     const payload = await response.json()
 
     assert.equal(response.status, 200)
     assert.equal(payload.ok, true)
-    assert.equal(payload.checkoutUrl, 'https://www.creem.io/checkout/test')
+    assert.equal(payload.checkoutUrl, 'https://www.polar.sh/checkout/test')
     assert.equal(calls[0].body.name, 'Ladybird Best Flight Deck (annual)')
     assert.equal(calls[0].body.price, 47400)
     assert.equal(calls[0].body.currency, 'USD')

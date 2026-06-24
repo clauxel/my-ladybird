@@ -100,7 +100,7 @@ function openCenteredCheckoutWindow() {
   const top = Math.max(0, Math.round(window.screenY + (window.outerHeight - height) / 2))
   const popup = window.open(
     'about:blank',
-    'ladybird-creem-checkout',
+    'ladybird-polar-checkout',
     `popup=yes,width=${width},height=${height},left=${left},top=${top},resizable=yes,scrollbars=yes`,
   )
 
@@ -108,7 +108,7 @@ function openCenteredCheckoutWindow() {
     try {
       popup.document.title = 'Opening secure checkout'
       popup.document.body.innerHTML =
-        '<main style="min-height:100vh;display:grid;place-items:center;background:#130f0d;color:#fff5de;font-family:Arial,sans-serif;text-align:center;padding:28px"><section><h1 style="font-size:22px;margin:0 0 8px">Opening secure checkout...</h1><p style="margin:0;color:#f1c7a7">Your Creem payment window is being prepared.</p></section></main>'
+        '<main style="min-height:100vh;display:grid;place-items:center;background:#130f0d;color:#fff5de;font-family:Arial,sans-serif;text-align:center;padding:28px"><section><h1 style="font-size:22px;margin:0 0 8px">Opening secure checkout...</h1><p style="margin:0;color:#f1c7a7">Your Polar payment window is being prepared.</p></section></main>'
     } catch {
       /* A named popup may already be cross-origin; assigning location still works. */
     }
@@ -212,7 +212,7 @@ export default function App() {
     return () => window.removeEventListener('message', onMessage)
   }, [publicOrigin, route])
 
-  async function startCheckout(planId = 'pro', cycle = billing, loadingKey = `checkout-${planId}-${cycle}`, provider = 'creem') {
+  async function startCheckout(planId = 'pro', cycle = billing, loadingKey = `checkout-${planId}-${cycle}`, provider = 'polar') {
     setSelectedPlan(planId)
     setBilling(cycle)
     setCheckoutLoadingKey(loadingKey)
@@ -222,7 +222,7 @@ export default function App() {
     const popup = openCenteredCheckoutWindow()
 
     try {
-      const response = await fetch(provider === 'nowpayments' ? '/api/nowpayments-checkout' : '/api/checkout', {
+      const response = await fetch(provider === 'polar' ? '/api/polar-checkout' : '/api/checkout', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ planId, billing: cycle }),
@@ -560,7 +560,7 @@ export default function App() {
                   type="button"
                   onMouseEnter={() => setSelectedPlan(plan.id)}
                   onFocus={() => setSelectedPlan(plan.id)}
-                  onClick={() => startCheckout(plan.id, billing, `${loadingKey}-wallet`, 'nowpayments')}
+                  onClick={() => startCheckout(plan.id, billing, `${loadingKey}-wallet`, 'polar')}
                   disabled={Boolean(checkoutLoadingKey)}
                 >
                   {checkoutLoadingKey === `${loadingKey}-wallet` ? 'Opening USDC wallet...' : 'Pay with USDC Wallet'}
@@ -646,7 +646,7 @@ export default function App() {
               not submit private dashboards or URLs containing secrets.
             </p>
             <h2>Payments</h2>
-            <p>Payments are handled through Creem hosted checkout. We receive payment metadata needed for fulfillment and support.</p>
+            <p>Payments are handled through Polar hosted checkout. We receive payment metadata needed for fulfillment and support.</p>
             <h2>Measurement</h2>
             <p>We send simple first-party events such as page views, pricing intent, and checkout starts. We do not use third-party tracking cookies.</p>
           </section>
@@ -671,7 +671,7 @@ export default function App() {
             <h2>Independent project</h2>
             <p>Ladybird Best is independent and is not affiliated with the official Ladybird Browser project.</p>
             <h2>Payments</h2>
-            <p>Plan payment happens in a Creem hosted checkout popup and returns to the homepage after completion.</p>
+            <p>Plan payment happens in a Polar hosted checkout popup and returns to the homepage after completion.</p>
           </section>
         </article>
       </main>
@@ -689,14 +689,14 @@ export default function App() {
           {checkout.status === 'loading' ? (
             <>
               <p className="lb-eyebrow">Secure checkout</p>
-              <h2 id="checkout-title">Opening Creem...</h2>
+              <h2 id="checkout-title">Opening Polar...</h2>
               <p>The payment window is being prepared. Keep this page open.</p>
               <div className="lb-loader" aria-hidden="true" />
             </>
           ) : checkout.status === 'popup' ? (
             <>
               <p className="lb-eyebrow">Secure checkout</p>
-              <h2 id="checkout-title">Creem checkout is open.</h2>
+              <h2 id="checkout-title">Polar checkout is open.</h2>
               <p>Finish payment in the centered popup. This page stays in place and returns home after success.</p>
               <a className="lb-button lb-button-dark" href={checkout.checkoutUrl} target="_blank" rel="noreferrer">
                 Reopen payment window
@@ -712,7 +712,7 @@ export default function App() {
                 type="button"
                 onClick={() => startCheckout(checkout.planId, checkout.billing, checkout.loadingKey)}
               >
-                Try Creem checkout again
+                Try Polar checkout again
               </button>
             </>
           )}
